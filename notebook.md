@@ -38,9 +38,11 @@ GPU 和CPU 共用 MEM可以吗?  苹果,  grace hopper就是这么做的. intel,
 
 vector instructions. 4way  可以一次处理4个数. 
 
-
-
 HBM 是一种立体空间内存.   难点是 发热严重 ,  立体的访问慢. 
 
 高级产品, 可能没有性价比,但是可以树立品牌形象,有广告作用.  
+
+这节课学会了帮公司采购电脑.
+
+每个core一个bus可以吗? 
 
