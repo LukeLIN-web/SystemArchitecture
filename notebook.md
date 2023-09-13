@@ -22,7 +22,7 @@ exam 3次,  45%
 
 1. bandwidth to memory不够
 2. 线很长, latency很大. 
-3. compiler没法使用好这么多寄存器. 分配寄存器是 np compele 问题.   有个编译器专家调查了一年, 结论是64个寄存器 已经很难利用好了.
+3. compiler没法使用好这么多寄存器. 分配寄存器是 np compele 问题.   有个编译器专家调查了一年, 结论是64个寄存器已经很难利用好了.
 
 GPU 和CPU 共用 MEM可以吗?  苹果,  grace hopper就是这么做的. intel, IBM 这么做, 失败了, 因为power技术不行,只好用weak 处理器. 
 
@@ -31,8 +31,6 @@ GPU 和CPU 共用 MEM可以吗?  苹果,  grace hopper就是这么做的. intel,
 3. AMD 有能力把GPU 和CPU 共用 MEM, 但是没有这么做, 为了英伟达的软件兼容性.
 
 老师说他没有ps1 游戏机, 但是设计过ps1.
-
-## class2
 
 6 cycles, 需要24 bytes 内存.  频率3GHz. 那么1s 访问12 GB 内存, 但是memory bus只有6GB/s. 那么就会成为bottleneck.
 
@@ -46,3 +44,77 @@ HBM 是一种立体空间内存.   难点是 发热严重 ,  立体的访问慢.
 
 每个core一个bus可以吗? 
 
+对于stream的数据, 因为只处理一次,  cache 几乎没啥用, 甚至有害. 
+
+#### stimulations
+
+functional, vs cycle-accurate .
+
+stochastic vs. deterministic .   deterministic 开销大, 因为要存big trace data来得到有用的结果.
+
+Event-based vs time based
+
+event queue vs multithreaded
+
+中国人喜欢riscv , 因为没有license.
+
+
+
+
+
+多个queue, 一对一 resource好. 还是一个queue,  多个resource好?
+
+一个queue,  多个resource:   适合有个很慢,可以分给一个resource 后面的不用等.
+
+ 多个queue, 一对一 resource, 需要优秀的load balancing schduler.  
+
+
+
+测量不准确怎么办?
+
+1. 多次测量, 用不同的random seeds
+2. 报告平均, 标准差和置信区间. 
+
+
+
+总共1TB 数据, 服务器用 32 GB 还是64GB双倍价格 的内存? 
+
+先要问 metrics是什么? 
+
+考虑有多少client, client 很多的话, 要多买一些服务器, 所以要买单价低的. 
+
+
+
+讨论可以每个人都参与, 但是课程就进行的非常慢, 一个小时就讲一两个知识点. 
+
+因为用户访问量随时间变化非常大, 所以需要云计算,弹性计算. 
+
+没有自己的超算,用别人的云计算80k美元发一篇文章.如果要一直用就需要有自己的机器. 
+
+如果要用外部库, 你需要 re compile dynamic lib with debug flag.
+
+
+
+以前晶体管不断变小, ->  faster switching, 现在不能无限提高频率了, 因为热效应过大, 会melt.
+
+读main memory ,需要50-60 ns.
+
+L1  有32KB.
+
+同步, lock都交给上层硬件. 原则就是, 应该把最底层的东西, 硬件,  做的 as simple as possible, 复杂的都交给上层. 而不是最底层提供大量复杂的功能. 这些功能可能上层用不到. 
+
+
+
+硬件多线程的影响
+
+优点:
+
+1. 充分利用cache
+2. 
+
+缺点
+
+1. 竞争cache
+2. tolerate memory latency
+3. more state-> more power
+4. 增加memory Bandwidth.
