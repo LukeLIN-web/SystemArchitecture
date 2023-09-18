@@ -14,7 +14,7 @@ exam 3次,  45%
 
 2015年送了一个手机给老师.
 
-## class1
+## 第一周
 
 访问L1 cache , 2-5 cycles, L2 12 cycles. main memory 5k-6k cycles.
 
@@ -95,7 +95,7 @@ event queue vs multithreaded
 
 
 
-以前晶体管不断变小, ->  faster switching, 现在不能无限提高频率了, 因为热效应过大, 会melt.
+以前晶体管不断变小, ->  faster switching, 现在不能无限提高频率了, 因为热效应过大, 会melt. 
 
 读main memory ,需要50-60 ns.
 
@@ -118,3 +118,49 @@ L1  有32KB.
 2. tolerate memory latency
 3. more state-> more power
 4. 增加memory Bandwidth.
+
+## 第二周
+
+vector processor , 是非常昂贵的. 
+
+very large instruction , 可以吗? intel 一个processor 做了, 但是行不通, 
+
+load vector register, 需要非常多 power .
+
+execution units 不用线性增长, 但是state, bandwidth, 芯片面积,power 都会随thread数量线性增长. 
+
+### multithread
+
+here we talk about hardware multithread !
+
+•What?
+
+•Abstractions of independent instruction streams implemented in hardware, equivalent to a CPU from a software perspective
+
+User thread, kernel thread (也就是操作系统的 thread),  hypervisor thread, hard ware thread. 这四个都是不一样的. 一层层往下都要映射. 
+
+一个core 可能有多个 hardware thread.  大部分都是1个 或者2个thread.  有的单核有4个thread, IBM 有过单核8 thread. 
+
+•Implications for the operating system: Scheduling
+
+•Implications for performance: More throughput, but not faster!
+
+•Implications for the software writer: May want to exploit by assist threads, etc.
+
+•A confusing concept: Program level threads can be multiplexed on the hardware threads
+
+
+
+#### loop unrolling
+
+是HPC非常常用的, 为了减少bubble, 循环步长不要设置为1, 而是在循环中修改变量i. 可以在循环中省下一两条指令的时间. 
+
+## 第三周
+
+data从寄存器到ALU也需要一个cycle.
+
+多线程可以 填补bubble
+
+structural hazard 的解决方案:  1.  增加资源. 
+
+2 ported register file
