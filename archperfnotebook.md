@@ -164,3 +164,12 @@ data从寄存器到ALU也需要一个cycle.
 structural hazard 的解决方案:  1.  增加资源. 
 
 2 ported register file
+
+
+
+现在实际上有200多个寄存器, 指令集的32个寄存器会映射过去. 
+
+
+
+2号考试, 可以搜索网络, 但是不能talk, 可以用chatgpt.
+
