@@ -169,6 +169,10 @@ structural hazard 的解决方案:  1.  增加资源.
 
 现在实际上有200多个寄存器, 指令集的32个寄存器会映射过去. 
 
+single-ported integer register file , file就是寄存器array. 
+
+感觉这个课就是默认学过体系结构, 作业都是综合大题, 必须熟练掌握体系知识. 问题充满了开放性, 很像企业面试题. 
+
 
 
 2号考试, 可以搜索网络, 但是不能talk, 可以用chatgpt.

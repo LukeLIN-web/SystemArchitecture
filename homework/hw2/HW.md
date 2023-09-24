@@ -1,6 +1,6 @@
 
 
-我的答案: 
+
 
 Q1:
 
@@ -14,9 +14,9 @@ b has bandwidth 125/8=15.625 GB/s , 128/15.625=8.192 ns
 
 b send a message of 128 Bytes  needs  6 microsecond + 8.192ns  =6008 ns
 
-Network thourghtput = 128/6008=0.0213GB/s 
+Network thourghtput = 128/6008=0.0213GB/s
 
-据说是 latency is smaller.  选a. 
+I use b, because it has better bandwidth.
 
 Q2
 
