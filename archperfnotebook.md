@@ -1,6 +1,6 @@
 老师是94年的博士, BSEE84,  MCE  87,  MSCS 90. 读了六年的硕士.12-20年的dean.之前在cmu, ut autsin当教授. 在 ibm 有职位. visit过贝尔实验室, meta. 在工业界20年, 在学术界20年.  
 
-博后也可以选课,她是哈萨克斯坦的博士, ms在uk
+博后也可以选课,她是哈萨克斯坦的博士, ms在uk.厂商2015年送了一个手机给老师.
 
 葡萄牙 老哥, 里斯本大学本硕.
 
@@ -12,7 +12,7 @@ exam 3次,  45%
 
 网上copy答案也可以,  标明出处, 而且要理解是copy了啥.
 
-2015年送了一个手机给老师.
+
 
 ## 第一周
 
@@ -165,7 +165,7 @@ single-ported integer register file , file就是寄存器array.
 
 
 
-2号考试, 可以搜索网络, 但是不能talk, 可以用chatgpt.
+2号考试, 可以搜索网络, 但是不能talk, 可以用chatgpt. 在blackboard可以在家做, solution email 5:30之前发给老师. 
 
 
 
@@ -196,4 +196,10 @@ st操作,st r3, (r6) 需要读两个,  r3和r6都要读reg.
 #### 寄存器重命名
 
 加速和乱序执行差不多, register renaming works better with larger codes.
+
+实际上的register比 32个architecture register多很多, 用来 renaming 或者暂存 etc.  
+
+IF, ID 之后, instruction issue & scheduling  是非常重要的, 
+
+pipeline 有n 个stage, 就有n个control register, 我们需要implement it. 有一个active的control register. 
 

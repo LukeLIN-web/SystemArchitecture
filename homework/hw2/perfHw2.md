@@ -1,59 +1,82 @@
 
 
-我的答案: 
 
-Q1:
 
-a has  100/8 = 12.5 GB/s,  128/12.5=10.24 ns 
+## Q1
 
-a send a message of 128 Bytes  needs 5microsecond + 10.24ns  =5012ns
+**For Device A:**
 
-Network thourghtput = 128/5012=0.0255GB/s 
+$100\mathrm{Gb/s} = 12.5\mathrm{GB/s}$
 
-b has bandwidth 125/8=15.625 GB/s , 128/15.625=8.192 ns
+Transmission Latency: $\frac{128\mathrm{B}}{12.5\mathrm{GB/s}}=10.24ns$
 
-b send a message of 128 Bytes  needs  6 microsecond + 8.192ns  =6008 ns
+Total Latency: $10.24ns+5ms=5010.24ns$
 
-Network thourghtput = 128/6008=0.0213GB/s 
+**For Device B:**
 
-据说是 latency is smaller.  选a. 
+$125\mathrm{Gb/s} = 15.625\mathrm{GB/s}$
 
-Q2
+Transmission Latency: $\frac{128\mathrm{B}}{15.625\mathrm{GB/s}}=8.192ns$
 
-The critical path in this pipeline is the longest sequence of stages, which in this case is from "Instruction decode" to "Execution unit," with a total time of 
+Total Latency: $8.192\mathrm{ns}+6\mathrm{ms}=6008.192\mathrm{ns}$
 
-400 + 500 + 400 = 1700ps
+Thus, **Device A is better**, because its total latency is smaller.
 
-To choose a good frequency for the processor, we want to ensure that the critical path can be completed within one clock cycle. Let's calculate the frequency (F) using the formula:
+## Q2
 
-F = 1 / Clock cycle time
+We could build a 5-stage pipelined processor. In this case, the latency is determined by the component took the longest time.
 
-F = 1 / 1700 picoseconds F ≈ 0.588 GHz
+We noticed `Operand fetch` may become the most time-consuming stage, which took up to 500ps if fetching an operand from the cache.
 
-Q4:
+However, for the processor, it is much more frequent to operate on registers compared to caches. Thus, we could let `Operand fetch from cache` take 2 cycles to complete. So, right now, `Instruction decode` and `Execution unit` determine the processing frequency, which is
 
-ld f1  1cycle 
+$f = \frac{1}{400\mathrm{ps}} = 2.5\mathrm{GHz}$
 
-mul f4,f2,f0  7 cycle
+## Q3
 
-ld f6 1 cycle  
+Since the webserver speed most of the time on waiting connection if the webserver is idle. Here we simulate this scenario.
 
-add f6   4 cycle 写后读, 不能改. 
+1. We measure the time starting at the server start
+2. We generate 1000 requests in POST method to avoid cache.
+3. We measure the time when the server finished all the requests and quit.
+4. We manually set a time counter to compare the running time of the server with/without profiler.
 
-st f6 1 cycle
+The result of default output is shown in `q3_output.txt`, and the svg is shown below
 
-add r1, r1, 8  1 cycle
+From the text result, it's not clear about the invoking relationship. But in the flame graph, it's more clear. There's the result analysis
 
-add r2, r2, 8 1 cycle
+1. The overhead time (socket initial time) is trivial, which is 0.15% of the total time.
+2. The server spend 20% of the time on `select` function, which is used to wait for the connection.
+3. We there's a request, the server spend 53.75% of the time on `parse_request` function, which is used to read the request and parse the header. The time for handling the request is only 11.68%, compared with the time for parsing the request, it's much smaller. So the header parser is the bottleneck of the server.
+4. If we enable the profiler, the execution time is 9.48s, but without the profiler, the execution time is 2.39s. The profiler takes 7.09s, which is 296.23% of the execution time. The overhead is huge, but it's acceptable since the profiler is used for debugging only once or twice.
 
-add r3, -1  1 cycle
 
-bnz  1cycle, 但是可以都预测为跳转,  循环次数很大的时候 约等于0 
+## Q4
 
-总共17个cycle, 9个instruction 
+Juyi 
 
-不能同时读取两个浮点数.  我们也不能重命名寄存器.
+####  数据依赖
 
-IPC :  17/9=1.88888888889 
+L2 和L1 
 
-这样可能不对? 需要excel 一个个stage算吗?  
+L4 和L2, L3 
+
+L5 和L4 
+
+L9 和L8控制依赖
+
+假设不用经过ALU可以直接bypass到mem.
+
+还假设了 floating point adder 和integer adder 可以并行. 
+
+L3不能在L2之前IF. 取指和解码只能顺序解 ,解完以后看指令是否满足条件运行, Fetch和decode必须in order的. 先前的指令不满足条件延后执行，之后的指令满足条件先执行
+
+同舟的是14个cycle  9个instr,  但是23个cycle有两次bnz. 到底怎么数 ipc呢? 可能要自己定义. 
+
+
+
+an instruction fetch stage that can fetch up to two instructions in a cycle, an instruction decode that can issue up to two instructions in a cycle, 
+
+an integer register file and a floating-point register file, each with four read ports and two write ports. 
+
+A load-store unit can load a data item from the cache in two cycles and stores in one cycle. Assume that the integer ALU computes in one cycle, a floating-point multiplier that is pipelined over 3 stages, and a floating-point adder that is pipelined over 2 stages.
