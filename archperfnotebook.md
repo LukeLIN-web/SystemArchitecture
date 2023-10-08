@@ -203,3 +203,33 @@ IF, ID 之后, instruction issue & scheduling  是非常重要的,
 
 pipeline 有n 个stage, 就有n个control register, 我们需要implement it. 有一个active的control register. 
 
+
+
+## 虚拟内存和TLB
+
+vector 声明的数组在heap,  普通的变量在stack.  **heap：是由malloc之类函数分配的空间所在地。** **地址是由低向高增长的。** **stack：是自动分配变量，以及函数调用的时候所使用的一些空间。** **地址是由高向低减少的**。
+
+Buddy Allocation : 分配内存, 不断减半, 直到最小的一块, smallest block its size 满足需求. 
+
+用MMU来翻译 ,从virtual page map 到 实际page. 
+
+TLB, 就是虚拟地址的cache 
+
+物理地址比虚拟地址空间大或者小都行, 独立的. 
+
+2^52次 * 6Byte,  6Byte 48bit 是physical address , 这需要的virtual address太大了.
+
+#### 页表
+
+对于每个frame 还会存protection bits 和reference bit.
+
+
+
+8bit , Index1, 找到page table level1 查找下一级的页表基地址. Index2 6bit, Index3 6bit,  offset 12bit.
+
+
+
+表示large 页表的方法
+
+1. 可以加indicator, 表现page有多大
+1. 专门用index 1 来索引大page. 
