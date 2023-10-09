@@ -1,4 +1,4 @@
-老师是94年的博士, BSEE84,  MCE  87,  MSCS 90. 读了六年的硕士.12-20年的dean.之前在cmu, ut autsin当教授. 在 ibm 有职位. visit过贝尔实验室, meta. 在工业界20年, 在学术界20年.  
+老师是94年的博士, BSEE84,  MCE  87,  MSCS 90. 读了六年的硕士.12-20年的dean.之前在cmu, ut autsin当教授. 在 ibm 有职位. visit过贝尔实验室, meta. 在工业界20年, 在学术界20年.  https://www.cs.cmu.edu/afs/cs/user/mootaz/ftp/html/research.html
 
 博后也可以选课,她是哈萨克斯坦的博士, ms在uk.厂商2015年送了一个手机给老师.
 
@@ -12,27 +12,27 @@ exam 3次,  45%
 
 网上copy答案也可以,  标明出处, 而且要理解是copy了啥.
 
+这个课默认学过体系结构, 作业都是综合大题, 必须熟练掌握体系知识. 问题充满了开放性, 很像企业面试题. 
 
+老师说他没有ps1 游戏机, 但是设计过ps1.
 
 ## 第一周
 
-访问L1 cache , 2-5 cycles, L2 12 cycles. main memory 5k-6k cycles.
+访问L1 cache , 2-5 cycles, L2,  12 cycles. main memory, 5k-6k cycles.
 
-普通就几十个寄存器, 有个人提出用60K个寄存器  , 问题在哪里?
+普通的CPU 有几十个寄存器, 有个人提出用60K个寄存器  , 问题在哪里?
 
 1. bandwidth to memory不够
 2. 线很长, latency很大. 
 3. compiler没法使用好这么多寄存器. 分配寄存器是 np compele 问题.   有个编译器专家调查了一年, 结论是64个寄存器已经很难利用好了.
 
-GPU 和CPU 共用 MEM可以吗?  苹果,  grace hopper就是这么做的. intel, IBM 这么做, 失败了, 因为power技术不行,只好用weak 处理器. 
+GPU 和CPU 共用 MEM可以吗?  苹果,  英伟达grace hopper就是这么做的. intel, IBM 这么做失败了, 因为power技术不行,只好用weak 处理器. 技术原因: 
 
 1. GPU 内存 bandwidth 很大, CPU内存需要latency小. 
 2. Data movement 用了非常多power.
 3. AMD 有能力把GPU 和CPU 共用 MEM, 但是没有这么做, 为了英伟达的软件兼容性.
 
-老师说他没有ps1 游戏机, 但是设计过ps1.
-
-6 cycles, 需要24 bytes 内存.  频率3GHz. 那么1s 访问12 GB 内存, 但是memory bus只有6GB/s. 那么就会成为bottleneck.
+6 cycles, 需要24 bytes 内存.  频率3GHz.  那么1s 访问12 GB 内存, 但是memory bus只有6GB/s. 会成为bottleneck.
 
 vector instructions. 4way  可以一次处理4个数. 
 
@@ -83,7 +83,7 @@ event queue vs multithreaded
 
 如果要用外部库, 你需要 recompile dynamic lib with debug flag.
 
-以前晶体管不断变小, ->  faster switching, 现在不能无限提高频率了, 因为热效应过大, 会melt. 
+以前晶体管不断变小 ->  faster switching, 现在不能无限提高频率了, 因为热效应过大, 晶体管会melt. 
 
 读main memory ,需要50-60 ns.
 
@@ -96,7 +96,6 @@ L1  有32KB.
 优点:
 
 1. 充分利用cache
-2. 
 
 缺点
 
@@ -107,9 +106,9 @@ L1  有32KB.
 
 ## 第二周
 
-vector processor , 是非常昂贵的. 
+vector processor 是非常昂贵的. 
 
-very large instruction , 可以吗? intel 一个processor 做了, 但是行不通, 
+very large instruction , 可以吗? intel 曾经有个processor 做了, 但是行不通.
 
 load vector register, 需要非常多 power .
 
@@ -117,7 +116,7 @@ execution units 不用线性增长, 但是state, bandwidth, 芯片面积,power �
 
 ### multithread
 
-here we talk about hardware multithread ! 
+here we talk about **hardware multithread**! 
 
 •What?
 
@@ -125,7 +124,7 @@ here we talk about hardware multithread !
 
 User thread, kernel thread (也就是操作系统的 thread),  hypervisor thread, hard ware thread. 这四个都是不一样的. 一层层往下都要映射. 
 
-一个core 可能有多个 hardware thread.  大部分都是1个 或者2个thread.  有的单核有4个thread, IBM 有过单核8 thread. 
+一个core 可能有多个 hardware thread.  大部分都是1个或者2个thread.  有的单核有4个thread, IBM 有过单核8 thread. 
 
 •Implications for the operating system: Scheduling
 
@@ -135,17 +134,13 @@ User thread, kernel thread (也就是操作系统的 thread),  hypervisor thread
 
 •A confusing concept: Program level threads can be multiplexed on the hardware threads
 
-
-
 #### loop unrolling
 
-是HPC非常常用的, 为了减少bubble, 循环步长不要设置为1, 而是在循环中修改变量i. 可以在循环中省下一两条指令的时间. 
+HPC 常用的技术, 为了减少bubble. 循环步长不为1, 而是在循环中修改变量i. 可以在循环中省下一两条指令的时间. 
 
 ## 第三周
 
-
-
-IF ID Reg  EX  L/S
+五个阶段: IF ID Reg  EX  L/S
 
 data从寄存器到ALU也需要一个cycle.
 
@@ -153,21 +148,11 @@ Control induced bubble. 不知道要不要跳转.
 
 多线程可以 填补bubble
 
-structural hazard 的解决方案:  1.  增加资源. 
-
-2 ported register file
+structural hazard 的解决方案:  增加资源. 比如 two ported register file
 
 现在实际上有200多个寄存器, 指令集的32个寄存器会映射过去. 
 
 single-ported integer register file , file就是寄存器array. 
-
-感觉这个课就是默认学过体系结构, 作业都是综合大题, 必须熟练掌握体系知识. 问题充满了开放性, 很像企业面试题. 
-
-
-
-2号考试, 可以搜索网络, 但是不能talk, 可以用chatgpt. 在blackboard可以在家做, solution email 5:30之前发给老师. 
-
-
 
 ### 第四周
 
@@ -185,7 +170,7 @@ st操作,st r3, (r6) 需要读两个,  r3和r6都要读reg.
 
 #### superscalar (multi-issue) pipeline
 
-需要增加更多资源, 
+需要增加更多资源
 
 #### 乱序执行
 
@@ -201,9 +186,7 @@ st操作,st r3, (r6) 需要读两个,  r3和r6都要读reg.
 
 IF, ID 之后, instruction issue & scheduling  是非常重要的, 
 
-pipeline 有n 个stage, 就有n个control register, 我们需要implement it. 有一个active的control register. 
-
-
+pipeline 有n 个stage, 就有n个control register, 课程project 需要implement it. 有一个active的control register. 
 
 ## 虚拟内存和TLB
 
@@ -211,25 +194,54 @@ vector 声明的数组在heap,  普通的变量在stack.  **heap：是由malloc�
 
 Buddy Allocation : 分配内存, 不断减半, 直到最小的一块, smallest block its size 满足需求. 
 
-用MMU来翻译 ,从virtual page map 到 实际page. 
-
 TLB, 就是虚拟地址的cache 
 
-物理地址比虚拟地址空间大或者小都行, 独立的. 
-
-2^52次 * 6Byte,  6Byte 48bit 是physical address , 这需要的virtual address太大了.
+物理地址比虚拟地址空间大或者小都行, 是独立的. 
 
 #### 页表
 
+用MMU来翻译, 从virtual page map 到 实际page. 
+
 对于每个frame 还会存protection bits 和reference bit.
 
-
+如果只有一个页表,  2^52次 * 6Byte,  6Byte 48bit 是physical address , 这需要的virtual address太大了.
 
 8bit , Index1, 找到page table level1 查找下一级的页表基地址. Index2 6bit, Index3 6bit,  offset 12bit.
 
-
+large page, 1个页有2MB.    之前都是在HPC用,   AI 可能推动很大的page, 因为数据非常多非常大. 
 
 表示large 页表的方法
 
 1. 可以加indicator, 表现page有多大
 1. 专门用index 1 来索引大page. 
+
+TLB miss 的代价是非常大的. 
+
+what if a page is swapped out? 
+
+
+
+Solution2 : o-Level page table
+
+- only a TLB inside processor
+- TLB miss , trap to software and let the OS deal with it. 
+
+缺点:   trap to software may be slow
+
+优点: simpler hardware, flexibility for OS 
+
+先cache, 再TLB, 可以更多吞吐. 因为可能不用经过TLB.  而且可以用id,  标记是哪个进程在用. 
+
+增加 associativity：访问时间hit 时间增加， miss 时间减少。
+
+全相连fully associate: 增加了hit时间,减小了miss rate 
+
+组相连: 
+
+直接连接:
+
+
+
+random :cheap , 
+
+LRU:  成本高. 
