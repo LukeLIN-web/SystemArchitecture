@@ -188,7 +188,7 @@ IF, ID 之后, instruction issue & scheduling  是非常重要的,
 
 pipeline 有n 个stage, 就有n个control register, 课程project 需要implement it. 有一个active的control register. 
 
-## 虚拟内存和TLB
+## L05 Virtual memory and TLB
 
 vector 声明的数组在heap,  普通的变量在stack.  **heap：是由malloc之类函数分配的空间所在地。** **地址是由低向高增长的。** **stack：是自动分配变量，以及函数调用的时候所使用的一些空间。** **地址是由高向低减少的**。
 
@@ -219,17 +219,6 @@ TLB miss 的代价是非常大的.
 
 what if a page is swapped out? 
 
-
-
-Solution2 : o-Level page table
-
-- only a TLB inside processor
-- TLB miss , trap to software and let the OS deal with it. 
-
-缺点:   trap to software may be slow
-
-优点: simpler hardware, flexibility for OS 
-
 先cache, 再TLB, 可以更多吞吐. 因为可能不用经过TLB.  而且可以用id,  标记是哪个进程在用. 
 
 增加 associativity：访问时间hit 时间增加， miss 时间减少。
@@ -240,13 +229,58 @@ Solution2 : o-Level page table
 
 直接连接:
 
-
-
 random :cheap , 
 
 LRU:  成本高. 
 
-
-
 有指令TLB和 Data TLB .
 
+Solution 1: Multi-Level Page Tables
+
+context table 在MMU中. 
+
+谁翻译这个地址? 
+
+Solution 2: zero-Level Page Table
+
+•Only a TLB inside processor
+
+•No page table support in MMU
+
+•On a TLB miss, trap to software and let the OS deal with it (MIPS 3000/4000)
+
+Advantages:  Simpler hardware , Flexibility for OS 
+
+Disadvantages: Trap to software,  may be slow
+
+The MIPS architecture used to have this feature. This enabled maximum flexibility to the software and simplified the implementation of the hardware. Unfortunately, the cost of a TLB miss can be substantial (although you may argue that it is not much better if done in hardware because of the memory accesses).
+
+
+
+问题 
+
+•What to do on a context switch?   每次switch都要flash TLB.  有的一个thread一个TLB,  有的多个thread共享一个TLB
+
+•What if we run out of entries? What is the replacement policy?  LRU, or random 
+
+•How to handle the page size issue? (e.g., Intel specifies 4K, 2MB and 1GB as valid page sizes)
+
+•Do we differentiate between instruction and data?
+
+•Should the operating system have the right to invalidate the TLB?
+
+On a context switch: You can flush the TBL (also, shoot down the TLB). On the other hand, this can be very costly. One can add an id that signifies the context of the translation, allowing multiple translations belonging to different threads to co-exist in the TLB. This is typically useful if the TLB has a second level (like a second level cache).
+
+If we run out of entry, most of the time we do a replacement at random. LRU would be great, but implementing it in hardware is quite difficult. Other algorithms that could be used is round-robin. The key issue here is speed and complexity of the implementation. There is no time to go into an elaborate algorithm like what the operating system would do, and similarly, implementing an elaborate algorithm in hardware could be very problematic.
+
+Handling different page sizes is a tricky issue. Typically, different TLB’s are devoted to different page sizes. Some systems would restrict the very large pages to be allocated within a certain region within the virtual address space. This way, some bits in the virtual address that is to be translated can be used to steer the translation toward the specific TLB that can be used for translation. 
+
+A TLB can be combined, providing service for both instructions and data. However, since these are two independent streams into the memory, it is profitable to have a separate TLB for instructions from the one that is used for the data.
+
+Yes, the operating system should have the right to invalidate the TLB. For instance, if a process is swapped out, or if a page is remapped to a different frame, all of these special cases need to be properly handled by the TLB. The operating system therefore should have the ability to invalidate one or more TLB entries as necessary.
+
+The Intel architecture seems to have an issue getting the TLB to work beyond 8 entries in fully associative mode. This is not surprising. Notice how the second level TLB is not using a fully associative structure. It is as if it has 256 TLB fully associative TLB within a reduced address range. 
+
+
+
+container, 
