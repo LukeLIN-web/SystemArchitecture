@@ -245,3 +245,8 @@ Solution2 : o-Level page table
 random :cheap , 
 
 LRU:  成本高. 
+
+
+
+有指令TLB和 Data TLB .
+
