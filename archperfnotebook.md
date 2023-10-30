@@ -255,8 +255,6 @@ Disadvantages: Trap to software,  may be slow
 
 The MIPS architecture used to have this feature. This enabled maximum flexibility to the software and simplified the implementation of the hardware. Unfortunately, the cost of a TLB miss can be substantial (although you may argue that it is not much better if done in hardware because of the memory accesses).
 
-
-
 问题 
 
 •What to do on a context switch?   每次switch都要flash TLB.  有的一个thread一个TLB,  有的多个thread共享一个TLB
@@ -281,6 +279,33 @@ Yes, the operating system should have the right to invalidate the TLB. For insta
 
 The Intel architecture seems to have an issue getting the TLB to work beyond 8 entries in fully associative mode. This is not surprising. Notice how the second level TLB is not using a fully associative structure. It is as if it has 256 TLB fully associative TLB within a reduced address range. 
 
+scoreboard , 可以看计算机体系结构-Tomasulo算法 - 天外飞仙的文章 - 知乎 https://zhuanlan.zhihu.com/p/499978902
+
+## week 6 memory architecture and caching
 
 
-container, 
+
+L1 分别有I cache 和D cache. 
+
+Only high-end systems sport an L3 cache. Sometimes, the L3 cache is in a different chip by itself, and sometimes it is mounted with the processor in a multichip module. 
+
+The L1 is typically split between data and instructions.
+
+A victim cache stores all the cache lines that are evicted from the L1/L2 combo. The idea is that upon a context switch from process P1 into process P2, the latter will start depopulating the P1 cache lines in favor of bringing the cache lines of P2. At some point though in the future, P1 will be switched back. In this case, having a victim cache will ensure that all the items that belong to P1 can be brought into the cache from a nearby location (on demand, of course. There is no bulk transfer of data from L3 to L2 or L1). The verdict of victim vs. inclusive cache is not clear cut. Proponents of the inclusive L3 cache design point out that the large size of the L3 will make an inclusive cache asymptotically identical to that of a victim structure.
+
+L2 通常是inclusive的. 包含 L1的所有数据. 
+
+The bits that indicate the state of the cache line are: M: Modified, E: Exclusive, V: Valid. If V=1 and E=0, it means that there are other caches on other cores or chips that have a copy of this cache line. These bits play an important role in the execution of cache coherence protocols (see L-07). They also play a role in the replacement algorithm. For instance, a cache line with V=0 (an empty slot) will be most beneficiary as a candidate for replacement. Next would be a cache line with V=1 and M=0, because we will not need to flush this cache line all the way to memory. And so on.
+
+The cache line size has been always a fascinating problem, as there is no definitive answer as to what is the optimal size. A larger cache line will require smaller address tags, fewer fetch operations, and if the principle of locality is respected, more data will be used per a single fetch operation. This can be great for reducing the overhead of the cache structure. But it comes with a price. A large cache line will perform poorly if the code does not show good locality of access. In fact, you are bound to bring into the cache data that may not likely to be used. It also puts more pressure on the bus operation, as we need to bring in a larger amount of data per fetch, and this may need for the bus to be wider, or we will have to split the fetch over more than one memory bus cycle. A large cache line also has the potential of bumping out more lines, which can reduce performance.
+
+Please note: Sometimes a cache line is called “cache block” in some literature.
+
+Please note: An unreasonably large cache line can exacerbate the problem of “False sharing”, please see L-07.
+
+How many bits do we store in the address tag? The bits indicating the offset within the line for a data items are not relevant to the comparisons. Therefore it is better to conserve space, power and time by only storing what is necessary. One may argue if we are really down there in the bit twiddling department. The answer is no. Consider a 44-bit address space with a 64-byte cache line. The 6 bits of the offset are about 14% of the address. Saving this amount in the address tag array will yield 14% less area and power. A good deal to have.
+
+
+
+Cache size 一般都是Stimulate 出来的, 都是工程调试, 没有准则. 
+
