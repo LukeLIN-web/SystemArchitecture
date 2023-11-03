@@ -309,3 +309,26 @@ How many bits do we store in the address tag? The bits indicating the offset wit
 
 Cache size 一般都是Stimulate 出来的, 都是工程调试, 没有准则. 
 
+
+
+### directly associative
+
+只对一个item比较
+
+### set associative
+
+44 bit address space
+
+7 bit offset 
+
+### fully  associative
+
+Any line can be stored In any address
+
+Need to compare all items
+
+**Write Through**）场景中，数据同时更新到缓存和内存（**simultaneously updated to cache and memory**）
+
+#### write back
+
+支持回写的缓存实现起来比较复杂，因为它需要跟踪哪些位置已被覆盖，并将它们标记为变脏，以便稍后写入memory中。出于这个原因，回写缓存中的读取未命中（需要一个块被另一个块替换）通常需要两次内存访问来服务：一次将替换的数据从缓存写回存储，一次检索所需的数据。
