@@ -267,49 +267,43 @@ The MIPS architecture used to have this feature. This enabled maximum flexibilit
 
 •Should the operating system have the right to invalidate the TLB?
 
-On a context switch: You can flush the TBL (also, shoot down the TLB). On the other hand, this can be very costly. One can add an id that signifies the context of the translation, allowing multiple translations belonging to different threads to co-exist in the TLB. This is typically useful if the TLB has a second level (like a second level cache).
+在上下文切换时：您可以清空TBL（也可以清空TLB）。然而，这可能非常昂贵。可以添加一个表示翻译上下文的标识符，允许不同线程的多个翻译共存于TLB中。这通常在TLB具有第二级（类似于第二级缓存）时非常有用。
 
-If we run out of entry, most of the time we do a replacement at random. LRU would be great, but implementing it in hardware is quite difficult. Other algorithms that could be used is round-robin. The key issue here is speed and complexity of the implementation. There is no time to go into an elaborate algorithm like what the operating system would do, and similarly, implementing an elaborate algorithm in hardware could be very problematic.
+如果我们的入口用尽，大多数情况下我们会随机替换。LRU（最近最少使用）是个好方法，但在硬件中实施它相当困难。其他可以使用的算法包括循环轮询。关键问题在于实施的速度和复杂性。没有时间使用类似操作系统的复杂算法，同样，在硬件中实施复杂算法可能会有很大问题。
 
-Handling different page sizes is a tricky issue. Typically, different TLB’s are devoted to different page sizes. Some systems would restrict the very large pages to be allocated within a certain region within the virtual address space. This way, some bits in the virtual address that is to be translated can be used to steer the translation toward the specific TLB that can be used for translation. 
+处理不同页面大小是一个棘手的问题。通常，不同的TLB专用于不同的页面大小。某些系统将非常大的页面限制为分配在虚拟地址空间的特定区域内。这样，虚拟地址中的一些位可以用于将翻译导向用于翻译的特定TLB。
 
-A TLB can be combined, providing service for both instructions and data. However, since these are two independent streams into the memory, it is profitable to have a separate TLB for instructions from the one that is used for the data.
+TLB可以合并，为指令和数据提供服务。然而，由于这两者是内存中的两个独立流，因此从指令和数据分别使用一个单独的TLB是有利的。
 
-Yes, the operating system should have the right to invalidate the TLB. For instance, if a process is swapped out, or if a page is remapped to a different frame, all of these special cases need to be properly handled by the TLB. The operating system therefore should have the ability to invalidate one or more TLB entries as necessary.
+是的，操作系统应该有权使TLB失效。例如，如果一个进程被交换出，或者一个页面被映射到不同的帧，所有这些特殊情况都需要由TLB正确处理。因此，操作系统应该有能力根据需要使一个或多个TLB条目失效。
 
-The Intel architecture seems to have an issue getting the TLB to work beyond 8 entries in fully associative mode. This is not surprising. Notice how the second level TLB is not using a fully associative structure. It is as if it has 256 TLB fully associative TLB within a reduced address range. 
+英特尔架构似乎在完全关联模式下使TLB工作超过8个条目存在问题。这并不令人意外。请注意，第二级TLB没有使用完全关联结构。好像它在一个缩小的地址范围内有256个完全关联的TLB。
 
 scoreboard , 可以看计算机体系结构-Tomasulo算法 - 天外飞仙的文章 - 知乎 https://zhuanlan.zhihu.com/p/499978902
 
 ## week 6 memory architecture and caching
 
-
-
 L1 分别有I cache 和D cache. 
 
-Only high-end systems sport an L3 cache. Sometimes, the L3 cache is in a different chip by itself, and sometimes it is mounted with the processor in a multichip module. 
+只有高端系统才配备L3缓存。有时，L3缓存位于单独的芯片中，而有时它与处理器一起安装在多芯片模块中。
 
-The L1 is typically split between data and instructions.
+L1缓存通常在数据和指令之间进行划分。
 
-A victim cache stores all the cache lines that are evicted from the L1/L2 combo. The idea is that upon a context switch from process P1 into process P2, the latter will start depopulating the P1 cache lines in favor of bringing the cache lines of P2. At some point though in the future, P1 will be switched back. In this case, having a victim cache will ensure that all the items that belong to P1 can be brought into the cache from a nearby location (on demand, of course. There is no bulk transfer of data from L3 to L2 or L1). The verdict of victim vs. inclusive cache is not clear cut. Proponents of the inclusive L3 cache design point out that the large size of the L3 will make an inclusive cache asymptotically identical to that of a victim structure.
+一个受害者缓存存储所有从L1/L2组合中逐出的缓存行。其思想是，在从进程P1切换到进程P2的上下文切换时，后者将开始清除P1的缓存行，以便为引入P2的缓存行腾出空间。然而，在未来的某个时刻，P1将再次切换回来。在这种情况下，拥有受害者缓存将确保属于P1的所有项目可以从附近的位置（当需要时）加载到缓存中。当然，没有从L3到L2或L1的数据的大规模传输。受害者缓存与包容性缓存之间的决定并不明确。包容式(inclusive)L3缓存设计的支持者指出，L3缓存的大尺寸将使包容式缓存在渐进情况下与受害者结构几乎相同。 原文 : A victim cache stores all the cache lines that are evicted from the L1/L2 combo. The idea is that upon a context switch from process P1 into process P2, the latter will start depopulating the P1 cache lines in favor of bringing the cache lines of P2. At some point though in the future, P1 will be switched back. In this case, having a victim cache will ensure that all the items that belong to P1 can be brought into the cache from a nearby location (on demand, of course. There is no bulk transfer of data from L3 to L2 or L1). The verdict of victim vs. inclusive cache is not clear cut. Proponents of the inclusive L3 cache design point out that the large size of the L3 will make an inclusive cache asymptotically identical to that of a victim structure. 
 
 L2 通常是inclusive的. 包含 L1的所有数据. 
 
-The bits that indicate the state of the cache line are: M: Modified, E: Exclusive, V: Valid. If V=1 and E=0, it means that there are other caches on other cores or chips that have a copy of this cache line. These bits play an important role in the execution of cache coherence protocols (see L-07). They also play a role in the replacement algorithm. For instance, a cache line with V=0 (an empty slot) will be most beneficiary as a candidate for replacement. Next would be a cache line with V=1 and M=0, because we will not need to flush this cache line all the way to memory. And so on.
+表示缓存行状态的位包括：M（修改），E（独占），V（有效）。如果V=1且E=0，表示其他核心或芯片上的缓存拥有该缓存行的副本。这些位在缓存一致性协议的执行中起着重要作用（详见第7讲）。它们还在替换算法中起作用。例如，具有V=0（空槽位）的缓存行将被视为替换的首选候选项。接下来是V=1且M=0的缓存行，因为我们无需将该缓存行完全刷新到内存。依此类推。
 
-The cache line size has been always a fascinating problem, as there is no definitive answer as to what is the optimal size. A larger cache line will require smaller address tags, fewer fetch operations, and if the principle of locality is respected, more data will be used per a single fetch operation. This can be great for reducing the overhead of the cache structure. But it comes with a price. A large cache line will perform poorly if the code does not show good locality of access. In fact, you are bound to bring into the cache data that may not likely to be used. It also puts more pressure on the bus operation, as we need to bring in a larger amount of data per fetch, and this may need for the bus to be wider, or we will have to split the fetch over more than one memory bus cycle. A large cache line also has the potential of bumping out more lines, which can reduce performance.
+缓存行大小一直是一个引人入胜的问题，因为没有明确的答案来确定最佳大小。较大的缓存行将需要较小的地址标签，较少的取操作，并且如果遵守局部性原则，每次取操作将使用更多的数据。这可以降低缓存结构的开销。但这也是有代价的。如果代码没有显示出良好的访问局部性，较大的缓存行性能将较差。实际上，您可能会将不太可能使用的数据放入缓存。它还增加了总线操作的压力，因为我们需要每次获取更多的数据，这可能需要更宽的总线，或者我们将不得不在多个内存总线周期内拆分获取。较大的缓存行还可能会逐出更多的行，这可能会降低性能。
 
-Please note: Sometimes a cache line is called “cache block” in some literature.
+需要注意：在一些文献中，有时将缓存行称为“缓存块”。
 
-Please note: An unreasonably large cache line can exacerbate the problem of “False sharing”, please see L-07.
+需要注意：不合理大的缓存行可能会加剧“虚假共享”的问题，请参见第7讲。
 
-How many bits do we store in the address tag? The bits indicating the offset within the line for a data items are not relevant to the comparisons. Therefore it is better to conserve space, power and time by only storing what is necessary. One may argue if we are really down there in the bit twiddling department. The answer is no. Consider a 44-bit address space with a 64-byte cache line. The 6 bits of the offset are about 14% of the address. Saving this amount in the address tag array will yield 14% less area and power. A good deal to have.
-
-
+我们在地址标签中存储多少位？数据项中用于表示行内偏移的位与比较无关。因此，最好只存储必要的内容，以节省空间、功耗和时间。有人可能会质疑我们是否真的在位操作中深入探讨这个问题。答案是否定的。考虑一个具有64字节缓存行的44位地址空间。偏移量的6位大约占地址的14%。在地址标签数组中节省这个量将减少14%的面积和功耗。这是一个很大的收益。
 
 Cache size 一般都是Stimulate 出来的, 都是工程调试, 没有准则. 
-
-
 
 ### directly associative
 
@@ -332,3 +326,37 @@ Need to compare all items
 #### write back
 
 支持回写的缓存实现起来比较复杂，因为它需要跟踪哪些位置已被覆盖，并将它们标记为变脏，以便稍后写入memory中。出于这个原因，回写缓存中的读取未命中（需要一个块被另一个块替换）通常需要两次内存访问来服务：一次将替换的数据从缓存写回存储，一次检索所需的数据。
+
+### page coloring
+
+"在这个示例中，操作系统最好保持2的9次方，也就是512个空闲页面队列，并以轮询的方式从这些页面队列中为请求的进程分配页面。这样，页面分配是均衡的。当可用内存开始变得紧缺时，一些这些队列可能会变为空。然后，新的分配变得不够理想。过度分配内存的系统运行通常不是一个好主意。"
+
+## memory
+
+存储芯片通常是根据存储的位数与读取的位数相乘来报的。例如，一个4Gb×1是一款非常流行的DRAM芯片（约2020年左右），它表示该芯片具有4G位，并且一次读取或写入操作在1位单位上进行。还有其他配置，比如4Gb×4等。
+
+请注意，单独的存储芯片通常是以位（b）而不是字节（B）为单位报价。
+
+请注意，为了形成一个字节的存储，我们通常会将8个xxMb×1位的芯片组合在一起，这就是所谓的DIMM（双排内存模块）
+
+请注意，通常会添加额外的芯片到数组中以存储奇偶校验。它本质上是8个芯片上所有数据的异或值。奇偶校验可以检测到由宇宙射线或周围环境中的噪声引起的内存内容损坏的情况。在高海拔地区运行的计算机更容易出现内存错误。
+
+有时，在高端系统或任务关键系统中，会添加额外的芯片以提供更多的保护。2个汉明码排列可以检测两个同时发生的错误并纠正单位错误。
+
+实际上，宇宙射线不会挑剔，它们可能同时影响多个芯片，引发灾难性错误。我们称这些为瞬态错误。
+
+实际上，瞬态错误要么被检测到，此时操作系统通常会发出“紧急”消息并关闭系统，要么瞬态错误未被检测到，此时我们将面对“静默错误”。静默错误可能会影响到我们当前未使用或即将覆盖的存储区域，这是幸运的情况。不幸的情况是，瞬态错误可能导致数据损坏，而这种损坏很难（如果有可能）恢复。"
+
+#### 内存控制器
+
+内存控制器负责执行内存总线事务。事务可以是原子事务，也可以是分割(split)事务。原子事务在完成之前不会释放总线。分割事务通过将事务分成每个都是原子运行的子事务，从而提供了更高的性能。分割事务的实现可能会很复杂。总线协议在实施和验证方面非常困难。您会发现，在行业中，内存总线技术在设计方面变化非常缓慢，尽管受益于总线宽度和频率的增加。设计新总线的复杂性是设计新协议的障碍，更改协议通常需要更改连接到总线的所有设备，这是一项非常昂贵的操作。
+
+#### Memory Architecture
+
+广播总线是连接的最简单形式。早期的共享内存多处理器系统，以保持处理器之间的内存一致性，都是采用广播总线技术实现的。所有参与者都能监听所有事务，这简化了缓存协议的实现，同时还允许通过锁定总线进行同步，以使处理器能够同时与多个实体通信。总线不像需要复杂路由的更复杂结构那样复杂。总线结构的问题既存在于性能方面，也存在于物理方面。在性能方面，总线带宽被所有参与者共享，这意味着随着我们在总线上添加更多参与者，每个参与者的带宽份额将减少。在物理方面，总线的长度有限，信号衰减会使其操作变得不切实际。这限制了总线结构的可扩展性，通常只能支持少数处理器，如果要获得良好的性能，通常不会超过十几个处理器。  
+
+NUMA（非统一内存访问）结构与支撑所有已知算法和理论发展的RAM（随机访问机器）模型的抽象存在巨大差异。当我们编写程序时，我们通常假设所有数据都能以相同性能均匀访问。然而，NUMA系统违反了这一原则，具体取决于内存分配给进程的方式。操作系统需要付出一些努力，以确保将内存分配给进程，使得所有数据来自同一节点。然后，操作系统会安排这些进程在最接近内存的芯片上运行。一般来说，在NUMA系统中编写具有可预测性性能的代码是困难的。
+
+需要注意的是，Elnozahy等人在21世纪初的一篇论文中提出，使用NUMA系统的正确方式是将每个具有独立内存的芯片视为独立单元，并在程序级别的节点之间使用消息传递。然后，共享内存用于加速消息传递的性能。他们证明，采用这种方式使用的系统可以优于将内存暴露给程序员的系统。
+
+此外，NUMA系统通常以比例形式引用，如1:2 NUMA，这意味着远程内存在访问周期数上比本地内存远两倍。
