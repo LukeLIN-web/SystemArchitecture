@@ -2,6 +2,62 @@
 
 
 
+Your grade for the HW1 submission is 79.5/100.
+
+
+
+Below, you will find comments for each question. Please review them and reach out in case you have any questions. For any rebuttal, please reach out before Thursday 5 pm. Any rebuttal request after Thursday will not be guaranteed to be held.
+
+
+
+**//START OF COMMENTS**
+
+Q1 7.5/10: The quoted argument from the StackExchange thread is not explained and taken as is. It does not contribute to the explanation given afterwards regarding the problem of having the main memory unable to accommodate the whole dataset and, therefore, the need for swapping from the disk. However, the swapping problem is correct and explained. The cache problem is correct but not well explained. There is no explanation indicating why specifically the cache size would be a problem only when the dataset is large (which is the case when the algorithm chooses to access a location far enough from those who are already in the cache). The problem of stacking an enormous number of recursion states, given the recursion nature of the qsort algorithm, is missing.
+
+
+
+Q2 2/15: Your solution is valid only if we assume that first of all, the data is already in the cache levels, including the added L3, and second, that it is distributed in a manner that the random index will uniformly choose from one of the 16MB. However, this benchmark randomly accesses a data point from a large array (here of integers), and even by adding an L3, the chances to sample an element randomly from one of the previous cached lines is still low as randomly picking an element from 0 to 1 << 24 will almost always surely going to access an element far from the previously fetched ones in a sense that the locality buys us nothing.
+
+
+
+Q3 5/5: Correct.
+
+
+
+Q4 10/10: Correct.
+
+
+
+Q5-a 5/5: Correct.
+
+
+
+Q5-b 7/9: You have not segregated the measurements for the two types of requests. The rest is correct and clear.
+
+
+
+Q5-c 9/9: Correct.
+
+
+
+Q5-d 9/9: Correct.
+
+
+
+Q5-e 6/9: You have not provided any explanation whatsoever and just gave the average response time and the std deviation time.
+
+
+
+Q5-f 9/9: Correct.
+
+
+
+Q5-g 10/10: Fair enough.
+
+***//END OF COMMENTS\***
+
+
+
 Q1:
 
 Consider the famous qsort() algorithm for a very large dataset. What would you consider the bottleneck in the system performance to be from a qualitative viewpoint?

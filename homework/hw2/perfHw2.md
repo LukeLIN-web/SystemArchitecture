@@ -1,3 +1,19 @@
+**/评论开始**
+
+Q1 5/10：计算128字节的传输持续时间。您应该注意，延迟是互连传输小于或等于带宽的数据所需的持续时间，因此它应该是 5 毫秒，而不是 5.01024 和 6 毫秒，而不是 6.008192 毫秒。这个小错误不会被扣分，因为推理是正确的。However, you have not shown any qualitative or quantitative analysis showing the difference in throughput between the two configurations where you demonstrate/show/deduce that Device A is suitable for workloads that transmit relatively small packets and Device B is suitable for workloads that transmit large packets (-3 points). You also have concluded that a measurement of transmission of *128 Bytes* is enough to choose Device A for building a **supercomputer** (-2 points). 
+
+
+
+Q2 10/10：正确。 
+
+
+
+Q3 30/30：正确。 
+
+
+
+Q4 45/50：提供了一种执行乱序执行的清晰方法。然而，发现了一些错误，例如周期 6、15、16、25 和 26（第 8、17、18、27、28 行），假设访问两个操作数的寄存器文件，而问题是 RegFiles单端口。此外，Excel 工作表仅包含一张高级 CPU 版本的工作表。在这种情况下，IPC 非常清楚它是如何“估计”的。它应该是从执行中确定性地推断出来的。不过，这很公平。
+
 
 
 
