@@ -47,6 +47,12 @@ then repeat the first cycle.
 
 Therefore ,the hit rate is  13/14=0.928571428571
 
+
+
+
+
+
+
 ## **Question 2 (5 points)**
 
 a. For problem 1, assume a page size of 4KB and a fully associative data TLB with 8 entries. Compute the TLB hit ratio. State your assumptions clearly.
@@ -73,9 +79,19 @@ page[2] , miss
 
 错了 !  这个程序是一个page访问几百下, TLB是hit rate是99%接近1001.5k hit 1 miss
 
+
+
+答案:
+
+ (3*511 +2  )/3/ 512 
+
 b. If the page table consists of a 6-level page table, would this change the answer to question 1? If so, how? If not, why?
 
 No, The TLB is a cache that stores recent translations from virtual to physical memory addresses. It serves to speed up this translation process. A TLB hit occurs when the translation for a given virtual address is already in the TLB, regardless of how deep or complex the page table structure is. The TLB hit ratio is primarily a function of the access pattern to the data (in this case, sequential access to the elements of an array) and the TLB's characteristics (size, associativity). Whether the underlying page table is 1-level or 6-level, the pattern of memory accesses (and thus TLB accesses) remains the same.
+
+6次memory load, 512 op出现一次, 不会有很大的变化.
+
+
 
 ### **Question 3 (5 points)**
 
@@ -94,6 +110,8 @@ Secondly, User processes typically cannot directly modify real address, so the v
 Thirdly, by storing the physical base address of each guest OS's page table, the hypervisor can ensure proper isolation and manage the memory resources among different virtual machines.
 
 2 How can the hypervisor allow multiple operating systems to run on the system? How can it organize access to the privileged register? Assume no hardware change is possible.
+
+答案: 触发异常, 
 
 #### Answer
 
