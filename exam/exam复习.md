@@ -42,7 +42,89 @@ cpu可以 9个
 
 pick CPU. 强化到10个stream 并发. 
 
-#### quiz03
+### quiz1
+
+1. A	good	assembly	programmer	can	potentially	obtain	a	factor	of	1.5	to	2	performance	improvement	over	optimized	C	code.	Why	don’t	we	program	in	assembler	if	performance	is	important?
+
+   因为编程速度太慢,  很多场景不是计算密集型.    (  还有就是可维护性太差, 要考虑 performance/$ , 性能/ 成本)
+
+2. A	server	is	showing	excessive	performance	degradation.	Outline	a	methodology	for	solving	the	problem.	
+
+   先检查CPU, 内存,  硬盘和网络占用情况, 如果哪个高, 检查为啥会高, 如果是CPU高 ,(说明 code is flawed or CPU 不够用了)   . 如果是内存占用大,  (会换入换出多, 伤害性能)尝试cache hit rate更大的程序 .  ( back storage不够导致IO bottleneck) , 换更强大的硬件总是可以解决问题. 
+
+     (检查bottleneck,  profile code 理解哪里花的时间最多,  应该检查尽可能多的system components,  )
+
+3. A	big	problem	in	the	supercomputing	field	is	the	difficulty	of	writing	code	that	can	exploit	the	parallel	architecture.	Not	only	writing	multithreaded	and	message-passing	codes	is	difficult,	but	also	the	performance	debugging	phase	can	often	be	very	frustrating.	Therefore,	it	has	been	argued	that	a	better	metric	is	to	measure	the	“time-to-solution”	to	evaluate	a	system.	The	time-to-solution	includes	the	time	to	write	a	program	to	solve	the	problem,	and	the	running	time	of	the	machine	to	produce	an	answer.	Critique	this	metric	and	consider	its	practical	use.
+
+感觉挺实用的, 实际开发中 也需要很长时间
+
+答案: Time to solution is a useful metric in some situations where the programmer’s time is a large component in the time to arrive to a solution. 不过, 如果每天都要运行这个程序, 很久也不会改程序, 那么running time就很重要了,  the time to solution converges to simply the runtime of the program, given that the initial programmer’s time will be a small component of the overall time to solution
+
+#### quiz2
+
+1. Consider adding hardware multithreading to a core. What is the impact on throughput as measured by instruction per cycle, and what is the impact on latency as measured by the time a thread can finish a certain number of instructions?
+
+(可以keep processor busy, 分享same pipeline cache 和memory带宽, 所以code locality好的话, 可以充分exploiting pipeline bubbles,    )  吞吐量会上升. latency可能上升.  (但是competition 可能会slow down each thread , 所以latency 可能会变大)
+
+2 Consider Amdahl’s law. There is some code that consists of a sequential part and then a recursive function. How do you apply the law in this case?
+
+(A recursive function can be converted into a loop and vice versa,   但是其实编译器不知道怎么deal with recursive functions  , 如果可以那就可以用这个law. 并行 recursive function, 可以express a limit on the improvement)就是并行定律, sequential part  是不能被并行的, 这一部分时间没法缩短
+
+3 A system shows utilization of 60% at the network interface, 60% in the memory bus, and 15% at the CPU. If you increase the capacity of the network and memory, what would be the impact on performance
+
+没(太大)变化, 因为都不是瓶颈.
+
+#### quiz3
+
+1
+
+add R1, R2, R0
+
+ ld R3, (SP) 
+
+add R1, #4 不能issue, 依赖 r1.
+ ld R4, (R1) 
+
+add R6, R3, R4
+
+ 答案: only the first and second can be issued concurrently.   The third instruction needs the outcome of instruction 1, and also instructions 3, 4 and 5 are dependent in a sequential manner. 
+
+2
+
+A pipeline consists of 10 stages. What is the maximum number of instructions that can be running concurrently?
+
+ 答案: 可以用10个, 但是这是没有bubble的情况, 最大可能性, This is not very common.
+
+3 
+
+Six arithmetic instructions are followed by a jump instruction. Do you foresee any effect of the jump instruction on the pipeline performance?
+
+如果可以分支预测的话, 就可以把之前的放过来.
+
+否则, 就要等六个arithmetic都执行完了才能jump.
+
+ 答案: 
+
+The jump instruction will require getting an instruction that may not be in sequential order with the flow. This could precipitate a **cache miss** in the instruction cache. This can lead to a bubble in the pipeline. If the jump instruction is conditional, then a big bubble may ensue 接着发生 because the miss instruction cache, **miss TLB**,  distrub the pipeline. 
+
+4 
+
+ld R3, (SP)  
+
+add R0, R3, R4 
+
+sto R0, (SP)
+ ld R3,(SP+4) 
+
+add R1, R3, R4 
+
+sto R1,(SP+4)
+
+Is it possible to issue instructions 1 and 4 simultaneously? If so, show how. If not, argue why.
+
+不能, 因为 sp 依赖instruction 3 . 3 依赖2, 2 依赖1 .
+
+#### quiz n
 
 1 He suggested changing the 4-way set associate l2 cache to a direct-mapped cache can reduce power consumption and keep the chip within the power envelope of the design targets. He admitted that there will be a loss in performance, but since each cache access requires four comparisons and a complex replacement algorithm to beimplemented, that the reduction in power was a fair tradeoff between performance and feasibility.
 
@@ -64,7 +146,7 @@ LRU, FIFO, random
 
 不同的replacement 策略不会改变. 
 
-#### quiz04
+#### quiz  m 
 
 1. Consider a workload that finds about 90% of its data in Level 1 cache, and 95% of its data in Level 2 cache. Compute the average time to load an item from memory as seen by the processor, given that the L1 cache requires 1 cycle to load, the L2 requires 10 cycles to load, and the main memory requires 65 cycles to load.
 

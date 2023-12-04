@@ -443,3 +443,22 @@ L1: tstst (r0)
 每个厂商都有做 transcation memory , 就是别的thread不能访问 这个thread的transcation memory. read 都不行.  
 
 transcation 不能太长, 否则就没法scaleable.
+
+
+
+
+
+hypervisor 怎么控制os的内存
+
+触发一个bus error
+
+在虚拟机 new 一个数组, 引发brk(); 引发trap,  会去 os还是hypervisor? 
+
+答: os 在user mode run,   
+
+1. trap先到hypervisor.  
+2. hypervisor 告诉os.   
+3. os allocate memory. 
+4. os update page table, 尝试写入 hypervisor memory. os 做不到,os 告诉hypervisor, 
+5. hypervisor 写hypervisor memory.
+
