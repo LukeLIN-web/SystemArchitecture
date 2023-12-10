@@ -105,7 +105,7 @@ Six arithmetic instructions are followed by a jump instruction. Do you foresee a
 
  答案: 
 
-The jump instruction will require getting an instruction that may not be in sequential order with the flow. This could precipitate a **cache miss** in the instruction cache. This can lead to a bubble in the pipeline. If the jump instruction is conditional, then a big bubble may ensue 接着发生 because the miss instruction cache, **miss TLB**,  distrub the pipeline. 
+The jump instruction will require getting an instruction that may not be in sequential order with the flow. This could precipitate a **cache miss** in the instruction cache. This can lead to a bubble in the pipeline. If the jump instruction is conditional, then a big bubble may ensue 接着发生 because the **miss instruction cache**, **miss TLB**,  distrub the pipeline. 
 
 4 
 
@@ -123,6 +123,64 @@ sto R1,(SP+4)
 Is it possible to issue instructions 1 and 4 simultaneously? If so, show how. If not, argue why.
 
 不能, 因为 sp 依赖instruction 3 . 3 依赖2, 2 依赖1 .
+
+答案:  可以, r3就是一个临时变量,  用寄存器重命名就可以.
+
+### quiz4
+
+1 
+
+```
+1* 0.9 + 0.1 * 0.95 *(1 +10) + 0.1 * 0.05 *(1 +10 + 65) 
+```
+
+2 没有说 l3的时间? 
+
+```
+1* 0.9 + 0.1 * 0.95 *(1 +10) + 0.1 * 0.05 *(1 +10 + 65) 
+```
+
+又要自己assume, Depending on the latency of accessing the L3, the average access time will be 0.9n + 0.5n + 0.1 * 0.5 * 0.6 * x n + 1.3n 
+
+
+
+3
+
+4GB/ 256M =  16.  (9x 4GB x8 /8 )/ 256M = 16 x 9  = 
+
+4
+
+( 4GB x8x 9/8 )/ (256M x4) = 4x9G / (256M *4)  = 36
+
+overhead  本来32块, 现在 36块, 就是9/8
+
+5
+
+2GF 计算, 需要 6G double, 一个double 64位. 8 Bytes.
+
+需要48GB 数据.
+
+一次64bytes.  64B.
+
+那就是48G/64 = 
+
+6
+
+offset 8bit, 2^8 = 256 Bytes.
+
+
+
+
+
+
+
+### quiz5
+
+
+
+
+
+
 
 #### quiz n
 
@@ -172,4 +230,14 @@ Assume that the cache line is 64 bytes. The processor runs at 2GHz. Calculate th
 一秒计算需要 3* 64bit = 192 bit  x 2 G  的数据
 
 所以带宽 为 3 x8 x2 / 8 = 6 GB/s
+
+tlb miss penalty 怎么算? 
+
+## exam3
+
+
+
+pipeline stall 怎么算时间呢?  就时间乘1.2吧
+
+
 
