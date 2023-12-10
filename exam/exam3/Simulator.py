@@ -27,7 +27,7 @@ class SimulatorConfigure:
     max_bus_utilization = 0.8
     bus_speed = 6 * 10**9  # 6 GHz
     cache_line_size = 64  # Assuming 64 bytes cache line
-    chips_per_system = 5  # Example value
+    chips_per_system = 12  # Example value
 
 class BusManager:
     def __init__(self):
@@ -71,15 +71,14 @@ class Core:
         if self.waiting_for_memory:
             return  # Currently waiting for memory access
 
-        if random.random() < 0.3:  # 10% chance to issue an instruction
-            if random.random() > self.config.L1i_hit_ratio and random.random() > self.config.L2_hit_ratio:
-                # L1 and L2 miss, need memory access
-                self.waiting_for_memory = True
-                if random.random() <= self.config.TLB_hit_ratio:
-                    access_time = self.config.memory_access
-                else:
-                    access_time = self.config.memory_access  * self.config.page_table_level # page walk
-                self.bus_manager.request_bus(self.chip_id, self.core_id, access_time)
+        if random.random() > self.config.L1i_hit_ratio and random.random() > self.config.L2_hit_ratio:
+            # L1 and L2 miss, need memory access
+            self.waiting_for_memory = True
+            if random.random() <= self.config.TLB_hit_ratio:
+                access_time = self.config.memory_access
+            else:
+                access_time = self.config.memory_access  * self.config.page_table_level # page walk
+            self.bus_manager.request_bus(self.chip_id, self.core_id, access_time)
 
 class Chip:
     def __init__(self, chip_id, config: SimulatorConfigure, bus_manager: BusManager):
@@ -94,10 +93,10 @@ class Chip:
 
 
 class System:
-    def __init__(self, config: SimulatorConfigure):
+    def __init__(self, config: SimulatorConfigure, num_chips):
         self.config = config
         self.bus_manager = BusManager()
-        self.chips = [Chip(chip_id, config, self.bus_manager) for chip_id in range(config.chips_per_system)]
+        self.chips = [Chip(chip_id, config, self.bus_manager) for chip_id in range(num_chips)]
 
     def start(self):
         for cycle in range(self.config.max_cycles):
@@ -113,6 +112,15 @@ class System:
 
 
 if __name__ == '__main__':
-    config = SimulatorConfigure()
-    system = System(config)
-    system.start()
+    for chips_per_system in range(1, 17):  # Testing for 1 to 16 chips
+        config = SimulatorConfigure()
+        config.chips_per_system = chips_per_system  # Set the number of chips in the configuration
+        system = System(config, chips_per_system)
+        system.start()
+
+        average_bus_utilization = system.bus_manager.busy_time / config.max_cycles
+        print(f"Chips: {chips_per_system}, Average bus utilization: {average_bus_utilization:.2%}")
+
+        if average_bus_utilization > 0.80:
+            print(f"Exceeded 80% utilization with {chips_per_system} chips")
+            break
