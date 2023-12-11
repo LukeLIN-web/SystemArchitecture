@@ -4,7 +4,6 @@ import random
 @dataclass
 class SimulatorConfigure:
     max_cycles = 100000
-    # instruction_interval = 100
 
     pipelinestall_ratio = 0.2
     data_access_ratio = 0.3
@@ -26,7 +25,6 @@ class SimulatorConfigure:
     cores_per_chip = 8
     max_bus_utilization = 0.8
     bus_speed = 6 * 10**9  # 6 GHz
-    cache_line_size = 64  # Assuming 64 bytes cache line
 
 class BusManager:
     def __init__(self):
@@ -65,18 +63,49 @@ class Core:
         self.config = config
         self.bus_manager = bus_manager
         self.waiting_for_memory = False
+        self.cachewaittime = 0
 
     def process_cycle(self):
         if self.waiting_for_memory:
             return  # Currently waiting for memory access
 
-        if random.random() > self.config.L1i_hit_ratio and random.random() > self.config.L2_hit_ratio:
-            # L1 and L2 miss, need memory access
-            self.waiting_for_memory = True
-            if random.random() <= self.config.TLB_hit_ratio:
-                access_time = self.config.memory_access
+        if random.random() <= self.config.pipelinestall_ratio:
+            return # Pipeline stall
+        if self.cachewaittime > 0:
+            self.cachewaittime -= 1
+            return
+        
+        if random.random() <= self.config.data_access_ratio:
+            # Data access
+            if random.random() <= self.config.L1d_hit_ratio:
+                # L1 hit
+                self.cachewaittime = self.config.L1_access_time
+            elif random.random() <= self.config.L2_hit_ratio:
+                # L2 hit
+                self.cachewaittime = self.config.L2_access_time
             else:
-                access_time = self.config.memory_access  * self.config.page_table_level # page walk
+                # L2 miss
+                self.waiting_for_memory = True
+                if random.random() <= self.config.TLB_hit_ratio:
+                    access_time = self.config.memory_access
+                else:
+                    access_time = self.config.memory_access  * self.config.page_table_level
+        else:
+            # Instruction access
+            if random.random() <= self.config.L1i_hit_ratio:
+                # L1 hit
+                self.cachewaittime = self.config.L1_access_time
+            elif random.random() <= self.config.L2_hit_ratio:
+                # L2 hit
+                self.cachewaittime = self.config.L2_access_time
+            else:
+                # L2 miss
+                self.waiting_for_memory = True
+                if random.random() <= self.config.TLB_hit_ratio:
+                    access_time = self.config.memory_access
+                else:
+                    access_time = self.config.memory_access  * self.config.page_table_level
+        if self.waiting_for_memory:
             self.bus_manager.request_bus(self.chip_id, self.core_id, access_time)
 
 class Chip:

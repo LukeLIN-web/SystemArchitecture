@@ -229,9 +229,9 @@ tlb miss penalty 怎么算?
 
 ## exam3
 
+pipeline stall 怎么算时间呢?  就是IPC 乘0.8 ,假设会stall
 
-
-pipeline stall 怎么算时间呢?  就时间乘1.2吧
+应该仿真每个cycle 还是每个指令呢? bus是共享的所以应该仿真每个cycle. 但是这样不知道cache要等多久. 过几天让同舟发一份他的答案看看. 
 
 
 
