@@ -27,7 +27,6 @@ class SimulatorConfigure:
     max_bus_utilization = 0.8
     bus_speed = 6 * 10**9  # 6 GHz
     cache_line_size = 64  # Assuming 64 bytes cache line
-    chips_per_system = 12  # Example value
 
 class BusManager:
     def __init__(self):
@@ -58,6 +57,7 @@ class BusManager:
             self.processing_time -=1
             if self.processing_time == 0:
                 self.release_bus()
+
 class Core:
     def __init__(self, core_id, chip_id, config: SimulatorConfigure, bus_manager: BusManager):
         self.core_id = core_id
@@ -65,7 +65,6 @@ class Core:
         self.config = config
         self.bus_manager = bus_manager
         self.waiting_for_memory = False
-
 
     def process_cycle(self):
         if self.waiting_for_memory:
@@ -100,7 +99,7 @@ class System:
 
     def start(self):
         for cycle in range(self.config.max_cycles):
-            id = self.bus_manager.process_cycle() # receive from busmanager
+            id = self.bus_manager.process_cycle() 
             if id is not None:
                 chipid, coreid = id
                 self.chips[chipid].cores[coreid].waiting_for_memory = False

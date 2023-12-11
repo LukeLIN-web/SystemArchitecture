@@ -168,12 +168,6 @@ overhead  本来32块, 现在 36块, 就是9/8
 
 offset 8bit, 2^8 = 256 Bytes.
 
-
-
-
-
-
-
 ### quiz5
 
 

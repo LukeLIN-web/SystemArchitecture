@@ -1,4 +1,4 @@
-### exam3
+## exam3
 
 ## question1
 
@@ -12,8 +12,9 @@
 
 #### Assumption:
 
-1. assume page table isn't in cache.
+1. page table isn't in cache.
 2. tlb access time = L1 cache time  = 2 cycles 
+3. when pipeline stall, the data access also stall.
 
 First we calculate **instruction** latency :
 
@@ -47,21 +48,23 @@ Average access = ( 1.7  n + 2.85 n + 0.8967  n + 0.27 n) / n
 
 execute access time :
 
-30%  instructions executed by the application require a data access. so   Average access = 5.72+ 3.24 = 5.72+3.24=8.96 
+30%  instructions executed by the application require a data access. so Average access = 5.72+ 3.24 = 5.72+3.24=8.96 
 
 70% no data access,  Average access =  3.24 cycles 
 
-so time is 
+so averge per instruction memory access time is 
 
 ```
-3.24+5.72*0.3=4.956   cycles
+3.24+5.72*0.3=4.956 cycles
 ```
 
-So IPC :  4.956 cycles
+So IPC = 1/4.956=0.20
 
-the SM loses about 20% of its cycles due to pipeline bubbles. So one instruction need 1/0.8+4.956=6.206 cycles
+the SM loses about 20% of its cycles due to pipeline bubbles.  Because we assume when pipeline stall, the data access also stall.  So Adjusted IPC=Initial IPC × Efficiency
 
-So IPC = 1/6.2 = 0.16
+So IPC = 0.20*0.8=0.16 
+
+How to improve performance:
 
 We can find L1data cache miss is an important performance bottleneck. Therefore, we need to optimize program, Focus on improving data locality to increase the hit ratio,  to avoid L1 data cache miss.  
 
@@ -71,13 +74,13 @@ We can also use instruction-level optimizations to reduce pipeline bubbles and i
 
 ### a
 
-One chip have 8 cores, so one chip have 8 L1 caches. Each SM cores has it icache and dcache. There is one process per core. So one chip has 8 process.
+cores:  cores are sharing L2 cache. We assume that we have eight processors share one L2 cache. One chip have 8 cores, so one chip have 8 L1 caches.  Each SM cores has it icache and dcache. 
 
-We assume that we have eight processors share one L2 cache. And different chip connect same memory with bus.
+Bus: And different chip connect same memory with bus.
+
+There is one process per core. So one chip has 8 process.
 
 we need to calculate bus busy time/ total time.
-
-Firstly, we calculate one chip bus utilization.
 
 we need to track **Bus Request Cycles**: The cycles during which the bus is utilized for memory accesses.
 
@@ -88,3 +91,5 @@ if bus is busy, the core need to wait until the data return from meory.
 ### b
 
 We only need to record bus utilization.
+
+We simulate and find the maximum number of chips is 11 or 12 that can be connected to the system while keeping the bus utilization under 80%.
