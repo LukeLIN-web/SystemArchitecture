@@ -34,9 +34,7 @@ Given the choice, it would be preferable to pick the design with a latch after e
 
 6/8 GB/s  内存可以. 21.3333333333
 
-network 可以10个,
-
-cpu可以 9个
+network 可以10个, cpu可以 9个
 
 所以最多9个同时. 
 
@@ -167,14 +165,6 @@ overhead  本来32块, 现在 36块, 就是9/8
 6
 
 offset 8bit, 2^8 = 256 Bytes.
-
-### quiz5
-
-
-
-
-
-
 
 #### quiz n
 
