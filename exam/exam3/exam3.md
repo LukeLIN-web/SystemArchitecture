@@ -1,5 +1,13 @@
 ## exam3
 
+评语
+
+Question 1: You ignored the queuing effects of memory stalls. Recall that in an in-order processor, a memory stall will not just affect the current instruction, but all instructions queued behind it.
+
+Question 2:
+
+I am surprised at the large number of chips that you report. Did you mean cores?
+
 ## question1
 
 #### Assumption

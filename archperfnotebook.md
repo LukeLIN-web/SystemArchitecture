@@ -16,9 +16,13 @@ exam 3次,  45%
 
 老师说他没有ps1 游戏机, 但是设计过ps1.
 
+学习专业知识需要自己花时间看ppt和思考, 上课老师可以教授"道".
+
+Folks, you CANNOT be so sloppy in your descriptions at this stage of your career. You can be a programming wizard, you can be the next coming in AI, you can even be the best Python coder in the world, but the way you present your solutions and you phrase your answers can be a show stopper in your next stage of your career if you are not careful. I will forgive this because of the exam and time pressure and all that, but PLEASE, in the future make sure that you communicate your answers clearly and well. And remember, half the job of a computer scientist is COMMUNICATIONS.
+
 ## 第一周
 
-访问L1 cache , 2-5 cycles, L2,  12 cycles. main memory, 5k-6k cycles.
+访问L1 cache , 2-5 cycles;  L2,  12 cycles; main memory, 5k-6k cycles.
 
 普通的CPU 有几十个寄存器, 有个人提出用60K个寄存器  , 问题在哪里?
 
@@ -160,7 +164,7 @@ arm(包括Apple) , risc, 和 power pc 都属于risc,  no translation.
 
 x86 , 是intel 和amd 用的, 有translator, 把 cisc 翻译成 risc.
 
-pipeline 不能太深, 否则时钟电平有问题. 
+pipeline 不能太深, 否则时钟电平有问题.
 
 标准的REG stage, 可以同时读两个写一个.
 
@@ -511,3 +515,4 @@ hypervisor 怎么控制os的内存
 5. hypervisor 写hypervisor memory.
 
 bus就是连接Last level cache和 memory
+
